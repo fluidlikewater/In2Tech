@@ -14,10 +14,10 @@ public class TheForgetfulMachine
 		
 		System.out.println();
 		System.out.println( "Great, now your favorite number?" );
-		keyboard.next();
+		keyboard.nextInt();
 		
 		System.out.println( "And your second-favorite number..." );
-		keyboard.next();
+		keyboard.nextInt();
 		
 		System.out.println();
 		System.out.println( "Whew! Wasn't that fun?" );
