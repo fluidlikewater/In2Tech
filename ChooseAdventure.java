@@ -132,10 +132,9 @@ public class ChooseAdventure
 				
 				if ( answer3.equals("break") )
 				{
-					System.out.println( "\nI'm seriously running out of ways to creatively off the protagonist here... Hows this?"
-										+ "\nAs you get to the bubble and start to grab your snack you hear a loud noise coming from outside."
-										+ "\nYou turn around just in time to see that one of the jets from Nellis has gone out of control"
-										+ "\nbut not in time to get out of the way as it crashes into the building.");
+					System.out.println( "\nYou go to the break room to grab a cup of coffe before getting to work but..."
+										+ "\nSomeone drank the last and didn't brew any more. Nooooooooooooooooo! Ok, so you didn't die"
+										+ "\nbut this is pretty bad too." );
 				}
 	
 				else if ( answer3.equals("work") )

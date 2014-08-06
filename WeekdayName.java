@@ -1,3 +1,5 @@
+// A switch statement would probably work better but it works as is and I am lazy.
+
 import java.util.GregorianCalendar;
 
 public class WeekdayName
