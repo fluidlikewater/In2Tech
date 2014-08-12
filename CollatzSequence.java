@@ -1,8 +1,6 @@
-// I don't get the point of this one. We must be using it later or something...
-
 import java.util.Scanner;
 
-public class WorstNumberGuesser
+public class CollatzSequence
 {
 	public static void main( String[] args )
 	{
@@ -10,8 +8,11 @@ public class WorstNumberGuesser
 		
 		int num, count = 0, max = 0;
 		
-		System.out.println("Starting Number: ");
+		System.out.print("Starting Number: ");
 		num = keyboard.nextInt();
+		
+		System.out.print( num + "\t");
+		
 		while ( num != 1 )
 		{
 			if ( num%2 ==0 )
@@ -26,6 +27,8 @@ public class WorstNumberGuesser
 				max = num;		
 		}
 		
-		System.out.print("Terminated after " + count + " steps. The largest value was " + max + ".");
+		System.out.println("\nTerminated after " + count + " steps. The largest value was " + max + ".");
+	}
 		
 }
+
