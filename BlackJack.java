@@ -1,9 +1,13 @@
 import java.util.Random;
 import java.util.Scanner;
 
+// Blackjack program. Allows betting and determines card values and suit, including face cards.
+
 public class BlackJack
 {	
-	static int playerCount = 0, dealerCount = 0, aceCountD = 0, aceCountP = 0, card, raise = 5;
+	
+	// Setup variables
+	static int playerCount = 0, dealerCount = 0, aceCountD = 0, aceCountP = 0, card, raise = 5, hitCount = 0;
 	static boolean aceD, aceP, playerBust, dealerBust, blackJackP, blackJackD, pStay, onDeal = true, playAgain = true;
 	static String pline1 = "", pline2 = "", pline3 = "", pline4 = "", dline1 = "", dline2 = "", dline3 = "", dline4 = "", suit, face;
 	static double money = 100;
@@ -17,7 +21,9 @@ public class BlackJack
 		System.out.println( "You start out with $" + money + "." );
 		
 		while ( playAgain )
-		{	
+		{
+		
+			// reset variables otherwise they are all where we left them from last playthough (that would be bad)
 			doEet = ""; 
 			hit = ""; 
 			risk = "";
@@ -33,6 +39,7 @@ public class BlackJack
 			dealerCount = 0; 
 			aceCountD = 0;
 			aceCountP = 0;
+			hitCount = 0;
 			aceD = false;
 			aceP = false; 
 			playerBust = false;
@@ -42,7 +49,8 @@ public class BlackJack
 			pStay = false;
 			onDeal = true;
 				
-			System.out.print( "Your current funds are $" + money + " and your current bet is " + raise + ". How much would you like to bet?\n>" );
+			// get initial bet and makes sure the value is within the acceptable range
+			System.out.print( "Your current funds are $" + money + ". How much would you like to bet?\n>" );
 			raise = keyboard.nextInt();
 		
 			while ( raise < 5 || raise > money )
@@ -59,15 +67,18 @@ public class BlackJack
 					raise = keyboard.nextInt();
 				}
 			}
-		
+			
+			// Deal the player and dealer hands
+			
 			dealCard("player");
 			dealCard("player");
 			
 			dealCard("dealer");
 			
-			if ( blackJackP == false )
+			// on the deal ask if the player wishes to double down given that no one has a blackjack
+			if ( blackJackD == false && pStay == false )
 			{
-				System.out.print( "Would you like to Double Down?\nY/N >" );
+				System.out.print( "\nYour total is " + playerCount + ". Would you like to Double Down?\nY/N >" );
 				risk = keyboard.next();
 					
 				if ( risk.equalsIgnoreCase("Y")  )
@@ -85,9 +96,11 @@ public class BlackJack
 				}
 			}
 			
-			while (pStay == false && playerBust == false)
+			// given that no one has a blackjack and the player decided not to double down ask to hit
+			
+			while (pStay == false && playerBust == false && blackJackD == false)
 			{
-				System.out.print( "Would you like to hit? Your current total is " + playerCount + ".\nY/N >" );
+				System.out.print( "\nWould you like to hit? Your current total is " + playerCount + ".\nY/N >" );
 				hit = keyboard.next();
 			
 				if ( hit.equalsIgnoreCase("Y")  )
@@ -101,75 +114,83 @@ public class BlackJack
 				}
 			}
 			
+			// if the player busts they automatically lose
+			
 			if (playerBust)			
 			{
-				System.out.println ( "Sorry. You bust and the dealer wins. :(" );
+				System.out.println ( "\nSorry. You bust and the dealer wins. :(" );
 				money = money - raise;	
 			}
+			
+			// given the player does not bust the dealer hits on anything 16 or below the player wins if the dealer busts
 			else
 			{			
 				while ( dealerCount < 17 )
 				{	
-					System.out.println( "The Dealer's total is: " + dealerCount );
-					System.out.println( "The dealer hits." );
+					hitCount = hitCount + 1;
 					dealCard("dealer");
+					System.out.println( "The Dealer's total is: " + dealerCount );
 					
 					if (dealerBust)
 					{
-						System.out.println ( "The dealer busts. Congratulations, you win!" );
+						System.out.println ( "\nThe dealer busts. Congratulations, you win!" );
 						money = money + raise;	
 					}
 				}
 			}
-		
+			
+			// if no one busts or has a natural blackjack calculate the winner & reveal the dealers hand if it was over 16
+			
 			if ( playerBust == false && dealerBust == false && blackJackP == false && blackJackD == false)
 			{
-				if (onDeal)
+				if ( hitCount == 0 )
 				{
+					System.out.println( "\nThe dealer reveals the hidden card.\n" + dline1 + "\n" + dline2 + "\n" + dline3 + "\n" + dline4 );
+					
 					if ( playerCount == dealerCount )
 					{
-						System.out.println( "The dealer reveals the hidden card.\n" + dline1 + "\n" + dline2 + "\n" + dline3 + "\n" + dline4 );
-						System.out.println( "Your total is " + playerCount + ". The dealer's total is " + dealerCount + ". The dealer wins on ties." );
+						System.out.println( "\nYour total is " + playerCount + ". The dealer's total is " + dealerCount + ". The dealer wins on ties." );
 						money = money - raise;
 					}
 					else if ( playerCount > dealerCount )
 					{
-						System.out.println( "The dealer reveals the hidden card.\n" + dline1 + "\n" + dline2 + "\n" + dline3 + "\n" + dline4 );
-						System.out.println( "Your total is " + playerCount + ". The dealer's total is " + dealerCount + ". Congratulations, you win!" );
+						System.out.println( "\nYour total is " + playerCount + ". The dealer's total is " + dealerCount + ". Congratulations, you win!" );
 						money = money + raise;
 					}
 					else
 					{
-						System.out.println( "The dealer reveals the hidden card.\n" + dline1 + "\n" + dline2 + "\n" + dline3 + "\n" + dline4 );
-						System.out.println( "Your total is " + playerCount + ". The dealer's total is " + dealerCount + ". The dealer wins." );
+						System.out.println( "\nYour total is " + playerCount + ". The dealer's total is " + dealerCount + ". The dealer wins." );
 						money = money - raise;
 					}
 				}
+				
 				else
 				{
 					if ( playerCount == dealerCount )
 					{	
-						System.out.println( "Your total is " + playerCount + ". The dealer's total is " + dealerCount + ". The dealer wins on ties." );
+						System.out.println( "\nYour total is " + playerCount + ". The dealer's total is " + dealerCount + ". The dealer wins on ties." );
 						money = money - raise;
 					}
 					
 					else if ( playerCount > dealerCount )
 					{	
-						System.out.println( "Your total is " + playerCount + ". The dealer's total is " + dealerCount + ". Congratulations, you win!" );
+						System.out.println( "\nYour total is " + playerCount + ". The dealer's total is " + dealerCount + ". Congratulations, you win!" );
 						money = money + raise;
 					}
 					
 					else
 					{
-						System.out.println( "Your total is " + playerCount + ". The dealer's total is " + dealerCount + ". The dealer wins." );
+						System.out.println( "\nYour total is " + playerCount + ". The dealer's total is " + dealerCount + ". The dealer wins." );
 						money = money - raise;
 					}
 				}				
 			}
 			
+			// if the player can no longer meet the minimum bet or decides to quit end the program
+			
 			if ( money > 5.0 )
 			{
-				System.out.print( "You currently have " + money + ". Would you like to keep going? " );
+				System.out.print( "\nYou currently have " + money + ". Would you like to keep going?\n>" );
 				doEet = keyboard.next();
 		
 				if ( doEet.equalsIgnoreCase("N") )
@@ -186,9 +207,9 @@ public class BlackJack
 		}
 	}
 
+	// method checks if the player or dealer busts if there are aces in the hand convert them from 11 to 1 before bust
 	public static void checkBust(String hand)
 	{
-	
 		if (hand.equals("player"))
 		{
 		
@@ -232,43 +253,54 @@ public class BlackJack
 		}
 	}
 	
+	// deals cards. the dealer output varies on if it is the deal, first hit or any subsequent hit
 	public static void dealCard(String hand)
 	{	
-		drawCard(hand);
 		if (hand.equals("player"))
 		{	
+			drawCard(hand);
 			playerCount = playerCount + card;
-			System.out.println( "Your card is a " + face + ".\nYour total is " + playerCount + "." );
-			System.out.println( pline1 + "\n" + pline2 + "\n" + pline3 + "\n" + pline4 );
 			checkBust(hand);
-			check21(hand);
+			System.out.println( "\nYour card is a " + face + ".\nYour total is " + playerCount + "." );
+			System.out.println( pline1 + "\n" + pline2 + "\n" + pline3 + "\n" + pline4 );
 		}	
 		
 		else if (hand.equals("dealer"))
 		{	
-			if ( onDeal )
+			if ( hitCount == 0 )
 			{
+				drawCard(hand);
 				dealerCount = dealerCount + card;
-				System.out.println( "The dealer shows a " + face + " plus one hidden card.\nDealer's total is " + dealerCount + "." );
+				System.out.println( "\nThe dealer shows a " + face + " plus one hidden card. The dealer's total is " + dealerCount + "." );
 				System.out.println( dline1 + "\n" + dline2 + "\n" + dline3 + "\n" + dline4 );
 				drawCard(hand);
 				dealerCount = dealerCount + card;
-				checkBust(hand);
-				check21(hand);
+				onDeal = false;
+			}
+			
+			else if ( hitCount == 1 )
+			{
+				System.out.println( "\nThe dealer reveals the hidden card.\n" + dline1 + "\n" + dline2 + "\n" + dline3 + "\n" + dline4 );
+				drawCard(hand);
+				System.out.println( "\nThe dealer hits." );
+				dealerCount = dealerCount + card;
+				System.out.println( "The dealer's new card is a " + face + "." );
+				System.out.println( dline1 + "\n" + dline2 + "\n" + dline3 + "\n" + dline4 );
 			}
 			else
 			{
+				drawCard(hand);
+				System.out.println( "\nThe dealer hits." );
 				dealerCount = dealerCount + card;
-				System.out.println( "The dealer's card is a " + face + ".\nDealer's total is " + dealerCount + "." );
+				System.out.println( "The dealer's card is a " + face + "." );
 				System.out.println( dline1 + "\n" + dline2 + "\n" + dline3 + "\n" + dline4 );
-				checkBust(hand);
-				check21(hand);
 			}
-			onDeal = false;
 		}
 		checkBust(hand);
+		check21(hand);
 	}
 	
+	// check for 21 if it is a natural payout 3/2 bet to the player. player auto stays on 21. player automatically loses if dealer gets 21.
 	public static void check21 (String hand)
 	{
 		if (hand.equals("player"))
@@ -295,7 +327,7 @@ public class BlackJack
 			
 			if (dealerCount == 21)
 			{	
-				if ( onDeal )
+				if ( hitCount == 0 )
 				{
 					blackJackD = true;
 					System.out.println( dline1 + "\n" + dline2 + "\n" + dline3 + "\n" + dline4 );
@@ -312,6 +344,7 @@ public class BlackJack
 			}
 		}	
 	}
+	// generates value, face, suit and ASCII art for cards
 	public static void drawCard(String hand)
 	{
 		Random r = new Random();
